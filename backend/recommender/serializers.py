@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from recommender.models import Plant_Recommend
+from .models import Recommend
 
-class PlantRecommendSerializer(serializers.ModelSerializer):
+class RecommendSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Plant_Recommend
+        model=Recommend
         fields='__all__'

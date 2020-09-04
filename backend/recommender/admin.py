@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Plant_Recommend
+from .models import Recommend
 
 # Register your models here.
-admin.site.register(Plant_Recommend)
+admin.site.register(Recommend)
