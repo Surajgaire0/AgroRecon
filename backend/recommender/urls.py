@@ -1,7 +1,7 @@
 from django.urls import path, include
-from .views import ListFactors, DetailFactors
+from .views import ListRecommended, DetailRecommended
 
 urlpatterns = [
-    path('<int:pk>',DetailFactors.as_view()),
-    path('',ListFactors.as_view()),
+    path('<int:pk>',DetailRecommended.as_view()),
+    path('',ListRecommended.as_view(),name='predicted'),
 ]

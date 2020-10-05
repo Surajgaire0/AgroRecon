@@ -5,10 +5,10 @@ from .serializers import RecommendSerializer
 #from .permissions import AllowAny
 
 # Create your views here.
-class ListFactors(generics.ListCreateAPIView):
+class ListRecommended(generics.ListCreateAPIView):
     queryset=Recommend.objects.all()
     serializer_class=RecommendSerializer
 
-class DetailFactors(generics.RetrieveUpdateDestroyAPIView):
+class DetailRecommended(generics.RetrieveUpdateDestroyAPIView):
     queryset=Recommend.objects.all()
     serializer_class=RecommendSerializer
