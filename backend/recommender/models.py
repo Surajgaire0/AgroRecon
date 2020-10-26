@@ -1,5 +1,7 @@
 from django.db import models
+from django.core.validators import MinValueValidator,MaxValueValidator
 import joblib
+import json
 
 # Create your models here.
 class Recommend(models.Model):
@@ -37,8 +39,8 @@ class Recommend(models.Model):
         ('high','High')
     )
 
-    min_ph=models.FloatField()
-    max_ph=models.FloatField()
+    min_ph=models.FloatField(validators=[MinValueValidator(0),MaxValueValidator(14)])
+    max_ph=models.FloatField(validators=[MinValueValidator(0),MaxValueValidator(14)])
     min_precipitation=models.FloatField()
     max_precipitation=models.FloatField()
     duration=models.CharField(max_length=20,blank=True,null=True,choices=DURATION_CHOICES,default='annual')
@@ -56,7 +58,8 @@ class Recommend(models.Model):
         try:
             #loaded_model=joblib.load('./trained_model/dtreev1.sav')
             #prediction=loaded_model.predict([[self.]])
-            self.prediction='grass' #for now
+            #self.prediction=json.dumps(['grass','tree']) #for now
+            self.prediction=json.dumps(['grass','tree'])
         except:
             pass
         super().save(*args,**kwargs)

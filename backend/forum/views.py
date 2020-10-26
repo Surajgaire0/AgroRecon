@@ -1,7 +1,10 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from forum.models import Question, Answer, Comment
-from .serializers import QuestionSerializer, AnswerSerializer, CommentSerializer
-#from .permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+from .models import Question, Answer, Comment, AnswerUpvote, CommentUpvote
+from .serializers import QuestionSerializer, AnswerSerializer, CommentSerializer, AnswerUpvoteToggleSerializer, CommentUpvoteToggleSerializer
 
 # Create your views here.
 class QuestionListView(generics.ListCreateAPIView):
@@ -9,7 +12,7 @@ class QuestionListView(generics.ListCreateAPIView):
     serializer_class=QuestionSerializer
 
     def perform_create(self,serializer):
-        serializer.save(userId=self.request.user)
+        serializer.save(user=self.request.user)
 
 
 class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -21,19 +24,73 @@ class AnswerListView(generics.ListCreateAPIView):
     serializer_class=AnswerSerializer
 
     def perform_create(self,serializer):
-        serializer.save(userId=self.request.user)
+        serializer.save(user=self.request.user)
+
 
 class AnswerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.views+=1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 
 class CommentListView(generics.ListCreateAPIView):
     queryset=Comment.objects.all()
     serializer_class=CommentSerializer
 
     def perform_create(self,serializer):
-        serializer.save(userId=self.request.user)
+        serializer.save(user=self.request.user)
 
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Comment.objects.all()
     serializer_class=CommentSerializer
+
+
+class AnswerUpvoteToggle(APIView):
+    #permission_classes=[IsAuthenticated]
+    serializer_class=AnswerUpvoteToggleSerializer
+
+    def post(self,request,*args,**kwargs):
+        user=request.user
+        answer=get_object_or_404(Answer,id=request.data['answer'])
+        upvote_instance=AnswerUpvote.objects.filter(user=user,answer=answer)
+        #if user has already upvoted
+        if upvote_instance:
+            upvote_instance.delete()
+            answer.upvote-=1
+            answer.save()
+            return Response({'status':'success','message':'upvote removed'},status=status.HTTP_200_OK)
+        else:
+            AnswerUpvote.objects.create(user=user,answer=answer)
+            answer.upvote+=1
+            answer.save()
+            return Response({'status':'success','message':'upvoted'},status=status.HTTP_201_CREATED)
+        return Response({'status':'error','message':'Bad Request'},status=status.HTTP_400_BAD_REQUEST)
+
+
+class CommentUpvoteToggle(APIView):
+    #permission_classes=[IsAuthenticated]
+    serializer_class=CommentUpvoteToggleSerializer
+
+    def post(self,request,*args,**kwargs):
+        user=request.user
+        comment=get_object_or_404(Comment,id=request.data['comment'])
+        upvote_instance=CommentUpvote.objects.filter(user=user,comment=comment)
+        #if user has already upvoted
+        if upvote_instance:
+            upvote_instance.delete()
+            comment.upvote-=1
+            comment.save()
+            return Response({'status':'success','message':'upvote removed'},status=status.HTTP_201_CREATED)
+        else:
+            CommentUpvote.objects.create(user=user,comment=comment)
+            comment.upvote+=1
+            comment.save()
+            return Response({'status':'success','message':'upvoted'},status=status.HTTP_200_OK)
+        return Response({'status':'error','message':'Bad Request'},status=status.HTTP_400_BAD_REQUEST)
+
