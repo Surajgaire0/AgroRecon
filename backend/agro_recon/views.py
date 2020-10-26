@@ -9,6 +9,7 @@ def home(request,format=None):
         'answer':reverse('answer_list',request=request,format=format),
         'comment':reverse('comment_list',request=request,format=format),
         'predicted':reverse('predicted',request=request,format=format),
-        'user-list':reverse('user_list',request=request,format=format),
+        'user_list':reverse('user_list',request=request,format=format),
+        'password_change':reverse('password_change',request=request,format=format),
         'documentation':'http://localhost:8000/api/docs/'
     })

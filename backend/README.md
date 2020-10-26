@@ -2,7 +2,7 @@
 
 **Running the backend code**
 
-Run the following commands.
+Enter the backend directory.
 ```sh
 $ cd backend 
 ```
