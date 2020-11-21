@@ -11,6 +11,7 @@ from rest_framework import serializers
 from .models import CustomUser
 from .serializers import CustomUserSerializer, PasswordChangeSerializer
 from .utils import PasswordValidator
+from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 class CustomUserListView(generics.ListCreateAPIView):
@@ -25,37 +26,24 @@ class CustomUserListView(generics.ListCreateAPIView):
             return Response({'message':'user successfully created'},status=status.HTTP_201_CREATED)
         return Response(user_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-# TODO: isownerorreadonly 
+
 class CustomUserDetailView(generics.RetrieveUpdateAPIView):
     queryset=CustomUser.objects.all()
     serializer_class=CustomUserSerializer
     lookup_field='username'
+    permission_classes=[IsOwnerOrReadOnly]
 
     def get(self,request,username=None):
         retrieved_user=get_object_or_404(get_user_model(),username=username)
         serializer_class=CustomUserSerializer(retrieved_user)
         return Response(serializer_class.data,status=status.HTTP_200_OK)
 
-    # def update(self,request,username=None,*args,**kwargs):
-    #     print (request.data)
-    #     data=request.data
-    #     password=data.get('password',None)
-    #     retrieved_user=get_object_or_404(get_user_model(),username=username)
-    #     if password:
-    #         if not retrieved_user.check_password(password):
-    #             return Response({'message':'password is not matched'},status=status.HTTP_400_BAD_REQUEST)
-    #     serializer_class=CustomUserSerializer(retrieved_user,data)
-    #     if serializer_class.is_valid(raise_exception=True):
-    #         serializer_class.save(partial=True)
-    #         return Response(serializer_class.data,status=status.HTTP_200_OK)
-    #     return Response(serializer_class.errors,status=status.HTTP_400_BAD_REQUEST)
-
 
 class PasswordChangeView(APIView):
     permission_classes=[IsAuthenticated]
     serializer_class=PasswordChangeSerializer
 
-    def post(self,request,*args,**kwargs):
+    def put(self,request,*args,**kwargs):
         user_instance=request.user
         old_password=request.data.get('old_password',None)
         new_password=request.data.get('new_password',None)
@@ -68,3 +56,6 @@ class PasswordChangeView(APIView):
             else:
                 return Response({'status':'error','message':'old password not matched'},status=status.HTTP_400_BAD_REQUEST)
         return Response({'status':'error','message':'Both old password and new password need to be given'},status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self,request,*args,**kwargs):
+        return self.put(request,*args,**kwargs)

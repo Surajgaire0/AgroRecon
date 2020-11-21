@@ -3,13 +3,22 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import Question, Answer, Comment, AnswerUpvote, CommentUpvote
-from .serializers import QuestionSerializer, AnswerSerializer, CommentSerializer, AnswerUpvoteToggleSerializer, CommentUpvoteToggleSerializer
+from .serializers import (
+    QuestionSerializer, 
+    AnswerSerializer, 
+    CommentSerializer, 
+    AnswerUpvoteToggleSerializer, 
+    CommentUpvoteToggleSerializer
+)
+from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 class QuestionListView(generics.ListCreateAPIView):
     queryset=Question.objects.all()
     serializer_class=QuestionSerializer
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
@@ -18,10 +27,12 @@ class QuestionListView(generics.ListCreateAPIView):
 class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Question.objects.all()
     serializer_class=QuestionSerializer
+    permission_classes=[IsOwnerOrReadOnly]
 
 class AnswerListView(generics.ListCreateAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
@@ -30,6 +41,7 @@ class AnswerListView(generics.ListCreateAPIView):
 class AnswerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Answer.objects.all()
     serializer_class=AnswerSerializer
+    permission_classes=[IsOwnerOrReadOnly]
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -42,17 +54,20 @@ class AnswerDetailView(generics.RetrieveUpdateDestroyAPIView):
 class CommentListView(generics.ListCreateAPIView):
     queryset=Comment.objects.all()
     serializer_class=CommentSerializer
+    permission_classes=[IsAuthenticatedOrReadOnly]
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
 
+
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Comment.objects.all()
     serializer_class=CommentSerializer
+    permission_classes=[IsAuthenticated,IsOwnerOrReadOnly]
 
 
 class AnswerUpvoteToggle(APIView):
-    #permission_classes=[IsAuthenticated]
+    permission_classes=[IsAuthenticated]
     serializer_class=AnswerUpvoteToggleSerializer
 
     def post(self,request,*args,**kwargs):
@@ -74,7 +89,7 @@ class AnswerUpvoteToggle(APIView):
 
 
 class CommentUpvoteToggle(APIView):
-    #permission_classes=[IsAuthenticated]
+    permission_classes=[IsAuthenticated]
     serializer_class=CommentUpvoteToggleSerializer
 
     def post(self,request,*args,**kwargs):
@@ -93,4 +108,3 @@ class CommentUpvoteToggle(APIView):
             comment.save()
             return Response({'status':'success','message':'upvoted'},status=status.HTTP_200_OK)
         return Response({'status':'error','message':'Bad Request'},status=status.HTTP_400_BAD_REQUEST)
-
