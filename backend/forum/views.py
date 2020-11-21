@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,9 +17,11 @@ from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 class QuestionListView(generics.ListCreateAPIView):
-    queryset=Question.objects.all()
+    queryset=Question.objects.annotate(answer_count=Count('answer')) # 'answer' refers to 'answer_set'
     serializer_class=QuestionSerializer
     permission_classes=[IsAuthenticatedOrReadOnly]
+    search_fields=('text',)
+    ordering_fields=('created_at','answer_count')
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
@@ -30,9 +33,12 @@ class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes=[IsOwnerOrReadOnly]
 
 class AnswerListView(generics.ListCreateAPIView):
-    queryset=Answer.objects.all()
     serializer_class=AnswerSerializer
+    queryset=Answer.objects.annotate(comment_count=Count('comment')) # 'comment' refers to 'comment_set'
     permission_classes=[IsAuthenticatedOrReadOnly]
+    filter_fields=('question',)
+    search_fields=('body',)
+    ordering_fields=('answered_at','upvote','views','comment_count')
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
@@ -55,6 +61,8 @@ class CommentListView(generics.ListCreateAPIView):
     queryset=Comment.objects.all()
     serializer_class=CommentSerializer
     permission_classes=[IsAuthenticatedOrReadOnly]
+    filter_fields=('answer',)
+    ordering_fields=('commented_at','upvote')
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)

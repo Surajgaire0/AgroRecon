@@ -37,17 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'recommender.apps.RecommenderConfig',
     'rest_framework',
+    'django_filters',
     'corsheaders',
     'users.apps.UsersConfig',
     'forum.apps.ForumConfig',
+    'recommender.apps.RecommenderConfig',
     #drf social oauth
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
-
-    'rest_auth'
+    'rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -94,6 +94,11 @@ REST_FRAMEWORK={
         'drf_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter'
+    )
 }
 
 CORS_ORIGIN_WHITELIST=(
