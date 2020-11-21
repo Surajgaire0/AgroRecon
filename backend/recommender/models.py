@@ -1,7 +1,7 @@
+import json
 from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator
-import joblib
-import json
+from .predict import predict
 
 # Create your models here.
 class Recommend(models.Model):
@@ -22,7 +22,7 @@ class Recommend(models.Model):
 
     TEXTURE_CHOICES=(
         ('coarse','Coarse'),
-        ('mild','Mild'),
+        ('medium','Medium'),
         ('fine','Fine')
     )
 
@@ -39,8 +39,7 @@ class Recommend(models.Model):
         ('high','High')
     )
 
-    min_ph=models.FloatField(validators=[MinValueValidator(0),MaxValueValidator(14)])
-    max_ph=models.FloatField(validators=[MinValueValidator(0),MaxValueValidator(14)])
+    ph=models.FloatField(validators=[MinValueValidator(0),MaxValueValidator(14)])
     min_precipitation=models.FloatField()
     max_precipitation=models.FloatField()
     duration=models.CharField(max_length=20,blank=True,null=True,choices=DURATION_CHOICES,default='annual')
@@ -49,17 +48,16 @@ class Recommend(models.Model):
     min_temperature=models.FloatField()
     shade_tolerance=models.CharField(max_length=20,choices=SHADE_CHOICES,default='Intermediate')
     drought_tolerance=models.CharField(max_length=20,choices=DROUGHT_CHOICES,default='Low')
-    prediction=models.CharField(max_length=200,editable=False,blank=True,null=True)
+    prediction=models.CharField(max_length=300,editable=False,blank=True,null=True)
 
     def __str__(self):
-        return 'Predicted: '+self.prediction
+        return 'Prediction: '+str(self.id)
 
     def save(self,*args,**kwargs):
         try:
-            #loaded_model=joblib.load('./trained_model/dtreev1.sav')
-            #prediction=loaded_model.predict([[self.]])
-            #self.prediction=json.dumps(['grass','tree']) #for now
-            self.prediction=json.dumps(['grass','tree'])
-        except:
-            pass
-        super().save(*args,**kwargs)
+            self.prediction=json.dumps(predict(self.min_temperature,self.max_precipitation,self.min_precipitation,self.ph,self.shade_tolerance,self.drought_tolerance,self.soil_texture))
+            super().save(*args,**kwargs)
+        except Exception as e:
+            print (e)
+
+
