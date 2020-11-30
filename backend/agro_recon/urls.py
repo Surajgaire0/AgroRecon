@@ -26,7 +26,6 @@ urlpatterns = [
     path('api/recommend/', include('recommender.urls')),
     path('api/users/', include('users.urls')),
     path('api/',include('forum.urls')),
-    #path('',TemplateView.as_view(template_name='home.html')),
     path('',views.home,name='home'),
     path('api/docs/', include_docs_urls(title='AgroRecon'),name='docs'),
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),

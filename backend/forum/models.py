@@ -29,7 +29,7 @@ class Answer(models.Model):
 
     @property
     def comment_count(self):
-        return self.comment_set.all().count()
+        return self.comment_set.count()
 
     @comment_count.setter
     def comment_count(self,value):
