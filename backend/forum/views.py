@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from .models import Question, Answer, Comment, AnswerUpvote, CommentUpvote
+from .models import Question, Answer, Comment, QuestionUpvote, AnswerUpvote, CommentUpvote
 from .serializers import (
     QuestionSerializer, 
     AnswerSerializer, 
     CommentSerializer, 
+    QuestionUpvoteToggleSerializer,
     AnswerUpvoteToggleSerializer, 
     CommentUpvoteToggleSerializer
 )
@@ -21,7 +22,7 @@ class QuestionListView(generics.ListCreateAPIView):
     serializer_class=QuestionSerializer
     permission_classes=[IsAuthenticatedOrReadOnly]
     search_fields=('text',)
-    ordering_fields=('created_at','answer_count')
+    ordering_fields=('created_at','answer_count','upvote','views')
 
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
@@ -31,6 +32,13 @@ class QuestionDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Question.objects.all()
     serializer_class=QuestionSerializer
     permission_classes=[IsOwnerOrReadOnly]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.views+=1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 class AnswerListView(generics.ListCreateAPIView):
     serializer_class=AnswerSerializer
@@ -72,6 +80,28 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Comment.objects.all()
     serializer_class=CommentSerializer
     permission_classes=[IsAuthenticated,IsOwnerOrReadOnly]
+
+
+class QuestionUpvoteToggle(APIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class=QuestionUpvoteToggleSerializer
+
+    def post(self,request,*args,**kwargs):
+        user=request.user
+        question=get_object_or_404(Question,id=request.data['question'])
+        upvote_instance=QuestionUpvote.objects.filter(user=user,question=question)
+        #if user has already upvoted
+        if upvote_instance:
+            upvote_instance.delete()
+            question.upvote-=1
+            question.save()
+            return Response({'status':'success','message':'upvote removed'},status=status.HTTP_201_CREATED)
+        else:
+            QuestionUpvote.objects.create(user=user,question=question)
+            question.upvote+=1
+            question.save()
+            return Response({'status':'success','message':'upvoted'},status=status.HTTP_200_OK)
+        return Response({'status':'error','message':'Bad Request'},status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnswerUpvoteToggle(APIView):

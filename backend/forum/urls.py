@@ -1,6 +1,15 @@
 from django.urls import path, include
-from .views import QuestionListView, QuestionDetailView, AnswerListView, AnswerDetailView, \
-    CommentListView, CommentDetailView, AnswerUpvoteToggle, CommentUpvoteToggle
+from .views import (
+    QuestionListView, 
+    QuestionDetailView, 
+    AnswerListView, 
+    AnswerDetailView,
+    CommentListView, 
+    CommentDetailView, 
+    AnswerUpvoteToggle, 
+    CommentUpvoteToggle, 
+    QuestionUpvoteToggle
+)
 
 urlpatterns = [
     path('questions/<int:pk>/',QuestionDetailView.as_view()),
@@ -10,5 +19,6 @@ urlpatterns = [
     path('comments/<int:pk>/',CommentDetailView.as_view()),
     path('comments/',CommentListView.as_view(),name='comment_list'),
     path('answers/upvote-toggle/',AnswerUpvoteToggle.as_view(),name='answer_upvote_toggle'),
-    path('comments/upvote-toggle/',CommentUpvoteToggle.as_view(),name='comment_upvote_toggle')
+    path('comments/upvote-toggle/',CommentUpvoteToggle.as_view(),name='comment_upvote_toggle'),
+    path('questions/upvote-toggle/',QuestionUpvoteToggle.as_view(),name='question_upvote_toggle'),
 ]

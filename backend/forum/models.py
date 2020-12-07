@@ -8,6 +8,8 @@ class Question(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True)
+    upvote=models.PositiveIntegerField(default=0)
+    views=models.PositiveIntegerField(default=0)
 
     @property
     def answer_count(self):
@@ -53,6 +55,11 @@ class Comment(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True)
     answer=models.ForeignKey(Answer,on_delete=models.CASCADE)
     upvote=models.PositiveIntegerField(default=0)
+
+
+class QuestionUpvote(models.Model):
+    question=models.ForeignKey(Question,on_delete=models.CASCADE)
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 
 
 class AnswerUpvote(models.Model):
