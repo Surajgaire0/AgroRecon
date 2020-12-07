@@ -9,18 +9,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers
 from .models import CustomUser
-from .serializers import CustomUserSerializer, PasswordChangeSerializer
+from .serializers import CustomUserSerializer,CustomUserCreateSerializer,PasswordChangeSerializer
 from .utils import PasswordValidator
 from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 class CustomUserListView(generics.ListCreateAPIView):
     queryset=CustomUser.objects.all()
-    serializer_class=CustomUserSerializer
+    serializer_class=CustomUserCreateSerializer
     parser_classes=[MultiPartParser,FormParser]
 
     def post(self,request):
-        user_serializer=CustomUserSerializer(data=request.data)
+        user_serializer=CustomUserCreateSerializer(data=request.data)
         if user_serializer.is_valid():
             created_user=user_serializer.save()
             return Response({'message':'user successfully created'},status=status.HTTP_201_CREATED)

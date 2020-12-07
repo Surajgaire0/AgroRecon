@@ -16,6 +16,8 @@ class AnswerSerializer(serializers.ModelSerializer):
         return obj.user.username
 
     def get_has_user_upvoted(self,obj):
+        if not self.context.get('request').user.is_authenticated:
+            return False
         return obj.answerupvote_set.filter(user=self.context.get('request').user).exists()
 
     class Meta:
