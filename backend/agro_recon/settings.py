@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'import_export',
     'users.apps.UsersConfig',
     'forum.apps.ForumConfig',
     'recommender.apps.RecommenderConfig',

@@ -1,11 +1,7 @@
 ## AgroRecon
 
-**Running the backend code**
+**Running the code**
 
-Enter the backend directory from main project folder.
-```sh
-$ cd backend 
-```
 Install the required packages.
 ```sh
 $ pip install -r requirements.txt

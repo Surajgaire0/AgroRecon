@@ -61,3 +61,12 @@ class Recommend(models.Model):
             print (e)
 
 
+class Plant(models.Model):
+    symbol=models.CharField(max_length=10)
+    scientific_name=models.CharField(max_length=25)
+    common_name=models.CharField(max_length=25)
+    duration=models.CharField(max_length=100)
+    growth_habit=models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.common_name
