@@ -142,8 +142,9 @@ dmypy.json
 .pytype/
 
 test.py
-
+.vs_code
 req.py
 frontend1
+**/.DS_Store
 
 # End of https://www.toptal.com/developers/gitignore/api/django
