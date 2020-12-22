@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'forum.apps.ForumConfig',
     'recommender.apps.RecommenderConfig',
-    #drf social oauth
+    # drf social oauth
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
@@ -75,7 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #required for drf social outh
+                # required for drf social outh
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
@@ -83,10 +83,10 @@ TEMPLATES = [
     },
 ]
 
-AUTH_USER_MODEL='users.CustomUser'
+AUTH_USER_MODEL = 'users.CustomUser'
 
-REST_FRAMEWORK={
-    'DEFAULT_PERMISSION_CLASSES':[
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -102,7 +102,7 @@ REST_FRAMEWORK={
     )
 }
 
-CORS_ORIGIN_WHITELIST=(
+CORS_ORIGIN_WHITELIST = (
     'http://localhost:4200',
     'http://localhost:3000',
 )
@@ -159,8 +159,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#Media files
-MEDIA_ROOT= os.path.join(BASE_DIR,'media')
+# Media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 AUTHENTICATION_BACKENDS = (
@@ -170,6 +170,8 @@ AUTHENTICATION_BACKENDS = (
     'drf_social_oauth2.backends.DjangoOAuth2',
     # Django
     'django.contrib.auth.backends.ModelBackend',
+    # custom backend
+    'users.backends.CustomUserBackend'
 )
 
 # Google configuration
@@ -182,4 +184,4 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
-SOCIAL_AUTH_USER_FIELDS=['username','email','password']
+SOCIAL_AUTH_USER_FIELDS = ['username', 'email', 'password']
