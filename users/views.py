@@ -8,16 +8,15 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import serializers
-from .models import CustomUser
 from .serializers import CustomUserSerializer, CustomUserCreateSerializer, PasswordChangeSerializer
-from .utils import PasswordValidator
+from .validators import PasswordValidator
 from .permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
 
 class CustomUserListView(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = CustomUserCreateSerializer
     parser_classes = [MultiPartParser, FormParser]
 
@@ -30,13 +29,27 @@ class CustomUserListView(generics.ListCreateAPIView):
 
 
 class CustomUserDetailView(generics.RetrieveUpdateAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = get_user_model().objects.all()
     serializer_class = CustomUserSerializer
     lookup_field = 'username'
     permission_classes = [IsOwnerOrReadOnly]
 
     def get(self, request, username=None):
         retrieved_user = get_object_or_404(get_user_model(), username=username)
+        serializer_class = CustomUserSerializer(retrieved_user)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+
+class MeUserView(APIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return get_user_model().objects.filter(username=self.request.user.username)
+
+    def get(self, request, *args, **kwargs):
+        retrieved_user = get_object_or_404(
+            get_user_model(), username=request.user.username)
         serializer_class = CustomUserSerializer(retrieved_user)
         return Response(serializer_class.data, status=status.HTTP_200_OK)
 

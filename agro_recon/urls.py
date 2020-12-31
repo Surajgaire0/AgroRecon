@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/docs/', include_docs_urls(title='AgroRecon'), name='docs'),
     path('api/', include('forum.urls')),
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
-    path('anyauth/', include('rest_framework.urls')),
+    path('api-auth/', include('rest_framework.urls')),
     path('', views.api_root, name='api_root'),
 ]
 

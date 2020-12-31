@@ -15,4 +15,4 @@ class CustomUserBackend(ModelBackend):
         except get_user_model().DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user .
-            get_user_model().set_password(password)
+            get_user_model().set_password()

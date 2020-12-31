@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from .models import CustomUser
-from .utils import PasswordValidator
+from .validators import PasswordValidator
 from forum.serializers import QuestionSerializer, AnswerSerializer, CommentSerializer
 from forum.models import Question, Answer, Comment
 

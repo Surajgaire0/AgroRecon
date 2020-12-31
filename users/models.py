@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -10,12 +9,18 @@ from django.utils.translation import gettext_lazy as _
 class CustomUser(AbstractUser):
     username = models.CharField(
         _('Username'),
-        max_length=150,
+        max_length=20,
         unique=True,
         help_text=_(
-            'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-        validators=[UnicodeUsernameValidator,
-                    RegexValidator(regex='^[a-zA-Z]+.*', message='Username should begin with alphabet.')],
+            'Required. 4 to 20 characters.Beginning with an alphabet. Letters, digits and @/./+/-/_ only.'
+        ),
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Z][\w@+-.]{3,19}\Z',
+                message='Invalid username. Must be 4 to 20 characters long, starting with an alphabet.\
+                     Letters, digits and @/./+/-/_ only.'
+            )
+        ],
         error_messages={
             'unique': _("A user with that username already exists."),
         },

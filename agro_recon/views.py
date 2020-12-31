@@ -14,6 +14,7 @@ def api_root(request, format=None):
         'comment_upvote': reverse('comment_upvote_toggle', request=request, format=format),
         'predict': reverse('predicted', request=request, format=format),
         'user_list': reverse('user_list', request=request, format=format),
+        'loggedin_user': reverse('me', request=request, format=format),
         'password_change': reverse('password_change', request=request, format=format),
         'documentation': 'http://localhost:8000/api/docs/'
     })
