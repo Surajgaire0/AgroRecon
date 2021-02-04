@@ -1,9 +1,10 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+
 from .models import CustomUser
 from .validators import PasswordValidator
-from forum.serializers import QuestionSerializer, AnswerSerializer, CommentSerializer
-from forum.models import Question, Answer, Comment
+from forum.models import Answer, Comment, Question
+from forum.serializers import AnswerSerializer, CommentSerializer, QuestionSerializer
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -37,5 +38,5 @@ class CustomUserCreateSerializer(serializers.ModelSerializer):
 
 
 class PasswordChangeSerializer(serializers.Serializer):
-    old_password = serializers.CharField(max_length=20)
-    new_password = serializers.CharField(max_length=20)
+    old_password = serializers.CharField(max_length=255)
+    new_password = serializers.CharField(max_length=255)

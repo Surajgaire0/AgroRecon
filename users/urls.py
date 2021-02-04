@@ -1,5 +1,11 @@
 from django.urls import path, include
-from .views import CustomUserListView, CustomUserDetailView, PasswordChangeView, MeUserView
+
+from .views import (
+    CustomUserListView,
+    CustomUserDetailView,
+    MeUserView,
+    PasswordChangeView
+)
 
 urlpatterns = [
     path('password-change/', PasswordChangeView.as_view(), name='password_change'),
