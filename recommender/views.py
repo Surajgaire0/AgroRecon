@@ -7,10 +7,11 @@ from rest_framework.response import Response
 from .models import Recommend, Plant
 from .serializers import RecommendSerializer, PlantSerializer
 
-# Create your views here.
-
 
 class ListRecommended(generics.ListCreateAPIView):
+    """
+    View for plant recommendation and list recommendation history
+    """
     queryset = Recommend.objects.all()
     serializer_class = RecommendSerializer
 

@@ -1,9 +1,9 @@
 import json
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from .predict import predict
 
-# Create your models here.
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
+from .predict import predict
 
 
 class Recommend(models.Model):

@@ -1,8 +1,9 @@
 import os
+
+from django.conf import settings
 import joblib
 import numpy as np
 from tensorflow.keras.models import load_model
-from django.conf import settings
 
 model = load_model(os.path.join(
     settings.BASE_DIR, 'recommender/model/model.h5'))

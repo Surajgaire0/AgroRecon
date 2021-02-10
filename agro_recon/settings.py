@@ -37,18 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
-    'forum.apps.ForumConfig',
-    'recommender.apps.RecommenderConfig',
+    # third party apps
     'rest_framework',
     'django_filters',
     'corsheaders',
     'import_export',
-    # drf social oauth
-    'oauth2_provider',
-    'social_django',
-    'drf_social_oauth2',
+    'oauth2_provider',  # drf social oauth
+    'social_django',  # drf social oauth
+    'drf_social_oauth2',  # drf social oauth
     'rest_auth',
+    # local apps
+    'users.apps.UsersConfig',
+    'forum.apps.ForumConfig',
+    'recommender.apps.RecommenderConfig',
 ]
 
 MIDDLEWARE = [
@@ -99,7 +100,9 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter'
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 7
 }
 
 CORS_ORIGIN_WHITELIST = (

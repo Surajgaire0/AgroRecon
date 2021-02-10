@@ -1,20 +1,22 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import MinimumLengthValidator, NumericPasswordValidator, validate_password
 from django.shortcuts import get_object_or_404
+
 from rest_framework import generics, serializers, status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .permissions import IsOwnerOrReadOnly
 from .serializers import CustomUserCreateSerializer, CustomUserSerializer, PasswordChangeSerializer
 from .validators import PasswordValidator
-from .permissions import IsOwnerOrReadOnly
-
-# Create your views here.
 
 
 class CustomUserListView(generics.ListCreateAPIView):
+    """
+    View for list users and register new users
+    """
     queryset = get_user_model().objects.all()
     serializer_class = CustomUserCreateSerializer
     parser_classes = [MultiPartParser, FormParser]
@@ -28,6 +30,9 @@ class CustomUserListView(generics.ListCreateAPIView):
 
 
 class CustomUserDetailView(generics.RetrieveUpdateAPIView):
+    """
+    View for retrieve and update user details
+    """
     queryset = get_user_model().objects.all()
     serializer_class = CustomUserSerializer
     lookup_field = 'username'
@@ -45,9 +50,6 @@ class MeUserView(APIView):
     """
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return get_user_model().objects.filter(username=self.request.user.username)
 
     def get_object(self):
         return self.request.user

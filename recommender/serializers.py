@@ -1,6 +1,8 @@
-from rest_framework import serializers
-from .models import Recommend, Plant
 import json
+
+from rest_framework import serializers
+
+from .models import Plant, Recommend
 
 
 class RecommendSerializer(serializers.ModelSerializer):
