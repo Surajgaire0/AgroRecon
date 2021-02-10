@@ -15,11 +15,13 @@ from .validators import PasswordValidator
 
 class CustomUserListView(generics.ListCreateAPIView):
     """
-    View for list users and register new users
+    APIView to list users and register new users
     """
     queryset = get_user_model().objects.all()
     serializer_class = CustomUserCreateSerializer
     parser_classes = [MultiPartParser, FormParser]
+    ordering_fields=('answer_count','comment_count','date_joined','question_count')
+    search_fields=('first_name','last_name','username')
 
     def post(self, request):
         user_serializer = self.serializer_class(data=request.data)
@@ -31,7 +33,7 @@ class CustomUserListView(generics.ListCreateAPIView):
 
 class CustomUserDetailView(generics.RetrieveUpdateAPIView):
     """
-    View for retrieve and update user details
+    APIView to retrieve and update user details
     """
     queryset = get_user_model().objects.all()
     serializer_class = CustomUserSerializer

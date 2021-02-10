@@ -8,7 +8,9 @@ from forum.serializers import AnswerSerializer, CommentSerializer, QuestionSeria
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-
+    """
+    User serializer for list, create view
+    """
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'address', 'profile_picture',
@@ -19,7 +21,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class CustomUserCreateSerializer(serializers.ModelSerializer):
-
+    """
+    User serializer for detail view
+    """
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'password', 'first_name', 'last_name', 'email',

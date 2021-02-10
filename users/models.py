@@ -7,6 +7,14 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
+    first_name = models.CharField(
+        _('first name'),
+        max_length=35,
+    )
+    last_name = models.CharField(
+        _('last name'),
+        max_length=35,
+    )
     username = models.CharField(
         _('Username'),
         max_length=20,
@@ -50,3 +58,6 @@ class CustomUser(AbstractUser):
     @property
     def comment_count(self):
         return self.comment_set.count()
+
+    def __str__(self):
+        return self.username

@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 
 class PasswordValidator:
+    """
+    Validate password length
+    """
     def __init__(self, min_length=8, max_length=255):
         self.min_length = min_length
         self.max_length = max_length
