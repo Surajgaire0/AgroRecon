@@ -39,10 +39,11 @@ class CustomUserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = CustomUserSerializer
     lookup_field = 'username'
     permission_classes = [IsOwnerOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request, username=None):
         retrieved_user = get_object_or_404(get_user_model(), username=username)
-        serializer_obj = self.serializer_class(retrieved_user)
+        serializer_obj = self.serializer_class(retrieved_user,context={'request': request})
         return Response(serializer_obj.data, status=status.HTTP_200_OK)
 
 
@@ -52,13 +53,14 @@ class MeUserView(APIView):
     """
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self):
         return self.request.user
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer_obj = self.serializer_class(instance)
+        serializer_obj = self.serializer_class(instance,context={'request': request})
         return Response(serializer_obj.data, status=status.HTTP_200_OK)
 
     def patch(self, request, *args, **kwargs):
